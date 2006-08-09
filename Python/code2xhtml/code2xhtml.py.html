@@ -1,0 +1,122 @@
+
+<html>
+<head>
+    <title>f:/work/code2xhtml/code2xhtml.py</title>
+    <link rel=stylesheet type="text/css" href="winter.css">
+</head>
+<body>
+    <div class="webcpp">
+    <pre>
+<font class="comment">#!/usr/bin/python</font>
+
+<font class="comment"># source2xhtml</font>
+<font class="comment"># by davies.liu@gmail</font>
+<font class="comment">#  2005/5/20</font>
+
+<font class="keyword">import</font> re,string
+<font class="keyword">import</font> keyword
+
+<font class="keyword">def</font> <font class="function">escape</font>( code ):
+    code = string.replace(code,<font class="dblquot">'&amp;'</font>,<font class="dblquot">'&amp;amp;'</font>)
+    code = string.replace(code,<font class="dblquot">'&lt;'</font>,<font class="dblquot">'&amp;lt;'</font>)
+    code = string.replace(code,<font class="dblquot">'&gt;'</font>,<font class="dblquot">'&amp;gt;'</font>)
+    <font class="keyword">return</font> code
+
+<font class="keyword">def</font> <font class="function">get_class_names</font>( code ):
+    class_names = []
+    p = re.compile( <font class="dblquot">r"^(\s)*?class\s+"</font>   <font class="comment"># before class name</font>
+                    <font class="dblquot">r"(?P&lt;classname&gt;[a-zA-Z]\w*)"</font> <font class="comment"># class name</font>
+                    <font class="dblquot">r"(\s*\()"</font> ,re.MULTILINE )    <font class="comment">#after class name</font>
+    <font class="keyword">for</font> m <font class="keyword">in</font> p.finditer( code ):
+        class_names.append( m.group( <font class="dblquot">'classname'</font> ) )
+    <font class="keyword">return</font> class_names
+
+<font class="keyword">def</font> <font class="function">get_func_names</font>( code ):
+    func_names = []
+    p = re.compile( <font class="dblquot">r"^(\s)*?def\s+"</font>   <font class="comment"># before func name</font>
+                    <font class="dblquot">r"(?P&lt;funcname&gt;[a-zA-Z]\w*)"</font> <font class="comment"># func name</font>
+                    <font class="dblquot">r"(\s*\()"</font> ,re.MULTILINE )    <font class="comment">#after func name</font>
+    <font class="keyword">for</font> m <font class="keyword">in</font> p.finditer( code ):
+        func_names.append( m.group( <font class="dblquot">'funcname'</font> ) )
+    <font class="keyword">return</font> func_names
+
+<font class="keyword">def</font> <font class="function">translate2xhtml</font>( code ):
+
+    regex = {
+        <font class="dblquot">'comment'</font> :<font class="dblquot">r'(?P&lt;comment&gt;\#.*?$)'</font>, <font class="comment"># comments</font>
+        <font class="dblquot">'dblquot'</font>    :<font class="dblquot">r'''(?P&lt;dblquot&gt;
+                       r?(?P&lt;tri&gt;\'\'\'|""")
+                           (\\.|[^\\])*?
+                         (?P=tri) |     # trible quotation
+                       r?(?P&lt;single&gt;[\'"])
+                           (\\.|[^\\])*?
+                         (?P=single)     # single quotation
+                   )'''</font>, 
+        <font class="dblquot">'keyword'</font> :<font class="dblquot">r'\W(?P&lt;keyword&gt;'</font> + string.join(keyword.kwlist,<font class="dblquot">'|'</font>)+<font class="dblquot">r')[\s:(]'</font>, <font class="comment"># keyword</font>
+        <font class="dblquot">'numeric'</font> :<font class="dblquot">r'''
+                     (?P&lt;numeric&gt;( # numeric re
+                        \d+[.]?|[.]\d)\d*     #  Decimal form
+                            (    
+                                [lL]|            # long number
+                                [eE][+-]?\d+|    # in exp format
+                                [jJ]|[+-](\d+[.]?|[.]\d)\d*[jJ] # complex form
+                            )?|
+                        0[0-7]+|             # Octal form
+                        0[xX][\da-fA-F]+     # Hexadecimal form
+                    )[^\w.]
+                    '''</font>,
+    }
+
+    <font class="comment">#get class name and func name</font>
+    class_names = <font class="function">get_class_names</font>( code )
+    <font class="keyword">if</font> len(class_names) :
+        regex[<font class="dblquot">'class'</font>] = <font class="dblquot">r'(?P&lt;class&gt;'</font> + string.join(class_names,<font class="dblquot">'|'</font>)+<font class="dblquot">r')[\s:(]'</font> <font class="comment"># class</font>
+    func_names = <font class="function">get_func_names</font>( code )
+    <font class="keyword">if</font> len(func_names) :
+        regex[<font class="dblquot">'function'</font>] = <font class="dblquot">r'(?P&lt;function&gt;'</font> + string.join(func_names,<font class="dblquot">'|'</font>)+<font class="dblquot">r')[\s:(]'</font> <font class="comment"># function</font>
+
+    <font class="comment"># tranlate code into xhtml format</font>
+    p = re.compile( string.join( regex.values(), <font class="dblquot">'|'</font> ) ,re.M|re.S|re.VERBOSE) 
+    offset = <font class="numeric">0</font>
+    new_code = <font class="dblquot">""</font>
+    <font class="keyword">for</font> m <font class="keyword">in</font> p.finditer( code ):
+        groupname = <font class="dblquot">""</font>
+        <font class="keyword">for</font> groupname <font class="keyword">in</font> regex.keys():
+            <font class="keyword">if</font> m.group(groupname ):
+                <font class="keyword">break</font>
+        new_code = new_code + code[offset:m.start(groupname)]\
+            + <font class="dblquot">'&lt;font class="%s"&gt;%s&lt;/font&gt;'</font>% (groupname,m.group(groupname))
+        offset = m.end(groupname)
+    new_code = new_code + code[offset:]
+
+    <font class="keyword">return</font> new_code
+
+<font class="keyword">if</font> __name__ == <font class="dblquot">"__main__"</font>:
+    test_file = <font class="dblquot">'f:/work/code2xhtml/code2xhtml.py'</font>
+    code = open(test_file).read()
+    
+    code = <font class="function">escape</font>( code )
+    xhtml_body = <font class="function">translate2xhtml</font>( code )
+    xhtml_header = <font class="dblquot">r"""
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;%s&lt;/title&gt;
+    &lt;link rel=stylesheet type="text/css" href="winter.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="webcpp"&gt;
+    &lt;pre&gt;
+"""</font> % test_file
+    xhtml_footer = <font class="dblquot">"""
+    &lt;/pre&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"""</font>
+    output = open(test_file + <font class="dblquot">".html"</font>, <font class="dblquot">'w'</font>)
+    output.write( xhtml_header + xhtml_body + xhtml_footer)
+    output.close()
+    
+    </pre>
+    </div>
+</body>
+</html>
