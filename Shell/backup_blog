@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DATE=`date +%F`
+FILE="/tmp/blogs-${DATE}.tar.bz2"
+BASEDIR="/var/www/localhost/htdocs/"
+tar cfj $FILE -C ${BASEDIR} blogs --exclude=images
+email -s "backup blog" -b backup -a $FILE
+rm $FILE
+
