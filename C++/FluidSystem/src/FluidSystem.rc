@@ -1,0 +1,330 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\FluidSystem.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""l.chs\\afxres.rc""          // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\FluidSystem.ico"
+IDI_ICON1               ICON    DISCARDABLE     "res\\icon1.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_FLUIDSYSTEM_DIALOG DIALOGEX 0, 0, 443, 363
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "定量泵蓄能器系统分析"
+MENU IDD_FLUIDSYSTEMDIALOG
+FONT 9, "宋体"
+BEGIN
+    CONTROL         "添加",IDC_ADDLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    208,17,28,8
+    CONTROL         "移动",IDC_MOVELINE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,241,17,30,8
+    CONTROL         "删除",IDC_DELETELINE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,207,31,28,9
+    CONTROL         "修改",IDC_MODIFYLINE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,242,31,28,8
+    EDITTEXT        IDC_START,322,14,29,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_END,378,14,29,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_VEL,322,29,29,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PERIOD,378,30,29,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_VOL,39,113,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MAXP,39,130,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MIDP,39,146,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MINP,39,161,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_AIRP,39,178,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_QUALITY,35,211,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ROTATE,35,227,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EFFECTIVE,35,243,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PUMP_COUNT,35,259,24,12,ES_AUTOHSCROLL
+    CONTROL         "油缸总流量",IDC_CHECK_ALLFLUX,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,295,56,10
+    CONTROL         "泵流量",IDC_CHECK_PUMPFLUX,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,310,40,10
+    CONTROL         "蓄能器油量",IDC_CHECK_BOXOIL,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,324,56,10
+    CONTROL         "蓄能器压强",IDC_CHECK_BOXPRESS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,340,64,8
+    LISTBOX         IDC_CROCKLIST,9,33,78,66,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_STATIC_ACTION,"Static",SS_BLACKFRAME,99,51,335,
+                    127
+    CONTROL         "",IDC_STATIC_FLUX,"Static",SS_BLACKFRAME,100,198,334,
+                    158
+    LTEXT           "油缸动作周期",IDC_STATIC,119,24,49,8
+    LTEXT           "仿真结果(单个周期)",IDC_STATIC,117,183,73,8
+    LTEXT           "最压",IDC_STATIC,12,132,19,8
+    LTEXT           "最低压",IDC_STATIC,12,163,24,9
+    LTEXT           "充气压",IDC_STATIC,12,179,25,10
+    LTEXT           "数量",IDC_STATIC,13,261,16,12
+    LTEXT           "油缸列表",IDC_STATIC,17,20,58,11
+    GROUPBOX        "蓄能器参数",IDC_STATIC,7,103,81,92
+    LTEXT           "容积",IDC_STATIC,12,115,19,8
+    GROUPBOX        "仿真曲线",IDC_STATIC,7,283,81,73
+    LTEXT           "低压",IDC_STATIC,12,148,22,11
+    GROUPBOX        "油泵参数",IDC_STATIC,7,200,81,78
+    LTEXT           "排量",IDC_STATIC,13,213,19,12
+    LTEXT           "转速",IDC_STATIC,13,229,17,12
+    LTEXT           "效率",IDC_STATIC,13,245,17,12
+    LTEXT           "V",IDC_STATIC,68,116,8,8
+    LTEXT           "MPa",IDC_STATIC,68,132,13,8
+    LTEXT           "MPa",IDC_STATIC,68,147,13,8
+    LTEXT           "MPa",IDC_STATIC,68,163,13,8
+    LTEXT           "MPa",IDC_STATIC,68,179,13,8
+    LTEXT           "ml/r",IDC_STATIC,66,213,17,12
+    LTEXT           "rpm",IDC_STATIC,66,229,17,12
+    LTEXT           "%",IDC_STATIC,66,245,17,12
+    LTEXT           "起点",IDC_STATIC,302,16,17,10
+    LTEXT           "终点",IDC_STATIC,359,17,16,9
+    LTEXT           "速度",IDC_STATIC,302,31,19,9
+    LTEXT           "周期",IDC_STATIC,358,31,22,9
+    GROUPBOX        "",IDC_STATIC,201,6,76,40
+    GROUPBOX        "",IDC_STATIC,296,6,118,40
+    LTEXT           "排量",IDC_MSG,215,184,212,8
+END
+
+IDD_ZOOM_DIALOG DIALOG DISCARDABLE  0, 0, 319, 207
+STYLE WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
+    WS_THICKFRAME
+CAPTION "放大"
+FONT 10, "System"
+BEGIN
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "FluidSystem Microsoft 基础类应用程序\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "FluidSystem\0"
+            VALUE "LegalCopyright", "版权所有 (C) 2003\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "FluidSystem.EXE\0"
+            VALUE "ProductName", "FluidSystem 应用程序\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_FLUIDSYSTEM_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 436
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 356
+    END
+
+    IDD_ZOOM_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 312
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 200
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDD_FLUIDSYSTEMDIALOG MENU DISCARDABLE 
+BEGIN
+    POPUP "文件(&F)"
+    BEGIN
+        MENUITEM "打开(&O)",                    ID_OPEN
+        MENUITEM "保存(&S)",                    ID_SAVE
+        MENUITEM SEPARATOR
+        MENUITEM "打印(&P)",                    ID_PRINT
+        MENUITEM SEPARATOR
+        MENUITEM "退出(&X)",                    ID_QUIT
+    END
+    POPUP "编辑(&O)"
+    BEGIN
+        MENUITEM "复制(&C)",                    ID_COPY
+        MENUITEM "剪切(&X)",                    ID_CUT
+        MENUITEM "粘贴(&V)",                    ID_PASTE
+        MENUITEM SEPARATOR
+        MENUITEM "清除(&L)",                    ID_CLEAR
+    END
+    POPUP "帮助(&H)"
+    BEGIN
+        MENUITEM "关于(&A)",                    ID_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDD_TOOLBAR TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_OPEN
+    BUTTON      ID_SAVE
+    SEPARATOR
+    BUTTON      ID_PRINT
+    SEPARATOR
+    BUTTON      ID_CUT
+    BUTTON      ID_COPY
+    BUTTON      ID_PASTE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDD_TOOLBAR             BITMAP  DISCARDABLE     "res\\toolbar.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_HAND                CURSOR  DISCARDABLE     "res\\cursor1.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OPEN                 "打开"
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE 4, 2
+#pragma code_page(936)
+#endif //_WIN32
+#include "res\FluidSystem.rc2"  // non-Microsoft Visual C++ edited resources
+#include "l.chs\afxres.rc"          // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
