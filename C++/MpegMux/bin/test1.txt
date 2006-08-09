@@ -1,0 +1,8 @@
+f:/work/mpeg/test/good/5.mpg
+512
+384
+1500000
+1
+auto
+2
+auto
