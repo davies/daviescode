@@ -1,3 +1,12 @@
+//*************************************************************************
+//2003年智能体大赛参赛程序——决不贪吃
+//by Davies , 2003-3-20
+//*************************************************************************
+
+//*************************************************************************
+//动态链接库的外部接口
+//*************************************************************************
+
 #include <windows.h>
 #include "playerstruct.h"
 #include "search.h"
@@ -38,6 +47,8 @@ PLAYER_STRUCT* CALLBACK player_create(MAPFILESTRUCT* mfs, INITINFO* ii)
 			ps->tmpMap[i][j] = new int[Width];//Col
 	}
 
+	//根据地图调整参数：最大长度和最大支路数
+	//最大支路数：地图所能搜索的最多支路数，在满足当前局面的博弈支路树的数目小于最大支路树的情况下，尽量深的搜索
 	if( Height <= 28 ){
 		ps->MaxPaths = 250;
 	}else if( Height <= 31 ){
@@ -45,6 +56,7 @@ PLAYER_STRUCT* CALLBACK player_create(MAPFILESTRUCT* mfs, INITINFO* ii)
 	}else {
 		ps->MaxPaths = 150;
 	}
+	//最大长度：当蛇的长度达到这个值时就不再贪吃
 	if( Height == 28 )
 		ps->MaxLength = 300;
 	else 
@@ -55,11 +67,10 @@ PLAYER_STRUCT* CALLBACK player_create(MAPFILESTRUCT* mfs, INITINFO* ii)
 
 int CALLBACK player_judge(PLAYER_STRUCT* ps, PLAYER_INFO* pi)
 {
-	//在这里加入你自己的判断代码，决定走的方向direction
-
+	//粗略求解当前形势下合适的搜索深度
 	ps->depth = getDepth(ps,pi);
+	//用博弈的方式搜索最佳策略
 	MapStatus result = Search(0,ps->ii->ID,ps,pi);
-
 	return result.move[ps->ii->ID]-1;
 }
 
@@ -73,7 +84,7 @@ void CALLBACK player_destroy(PLAYER_STRUCT* ps)
 	for(int j=0;j<Height;j++)
 		delete ps->pMap[j];
 	delete ps->pMap;
-	
+
 	for(int i=0;i<3;i++)
 	{
 		delete ps->nodes[i];
