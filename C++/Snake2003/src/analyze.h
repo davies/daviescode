@@ -2,6 +2,7 @@
 #define ANALYZE_H
 
 struct PlayerStatus{
+	int space;
 	int living;			//蛇的生存空间，用以判断蛇的生死
 	bool safe;
 	bool dead;		//0

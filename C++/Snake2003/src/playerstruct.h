@@ -94,6 +94,7 @@ struct MAP_INFO									//每个回合传给选手的结构
 {
 	AISNAKE			SnakeArr[2];		//指向每条蛇的指针数组
 	FRUIT			Fruit;							//Fruit信息
+	SNAKERESULT		ResultInfo[MAXSNAKECOUNT];		//
 	DWORD			CurTime;						//当前的回合数
 };
 
@@ -104,12 +105,17 @@ struct PLAYER_STRUCT{
 		//在这里加入你需要的全局变量
 		DWORD	Height;
 		DWORD	Width;
-		int** pMap[MAXDEPTH+1];
-		int** tmpMap[2];
-		MAP_INFO *info[MAXDEPTH+1];
-		POSITION *nodes[2];
-		int depth;
-		int paths;
+		int** pMap[MAXDEPTH+1];			//搜索用地图
+		int** tmpMap[3];				//临时地图
+		MAP_INFO *info[MAXDEPTH+1];		//搜索的地图信息
+		POSITION *nodes[3];				//纪录经过的节点
+		int count[2];
+		int depth;						//当前搜索深度
+		int MaxPaths;
+		int MaxLength;
+		int paths;						//当前搜索路径数
+		FILE *logFile;
+		bool load;
 };
 
 #endif

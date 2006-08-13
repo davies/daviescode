@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=example - Win32 Debug
+CFG=EXAMPLE - WIN32 RELEASE
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=example - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "example.mak" CFG="example - Win32 Debug"
+!MESSAGE NMAKE /f "example.mak" CFG="EXAMPLE - WIN32 RELEASE"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"..\player\last.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../player/davies-release.dll"
 
 !ELSEIF  "$(CFG)" == "example - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "EXAMPLE_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "EXAMPLE_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "EXAMPLE_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "_DEBUG"
@@ -96,6 +96,14 @@ SOURCE=.\analyze.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\choose.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\depth.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\example.cpp
 # End Source File
 # Begin Source File
@@ -108,7 +116,23 @@ SOURCE=.\getFruit.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\log.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Search.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\space1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\space2.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\space3.cpp
 # End Source File
 # End Group
 # Begin Group "Resource Files"
@@ -128,11 +152,19 @@ SOURCE=.\getFruit.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\log.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\playerstruct.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\search.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\space.h
 # End Source File
 # End Group
 # End Target

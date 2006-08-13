@@ -3,14 +3,15 @@
 //假定蛇以最快的方式吃果子，跟新蛇的身体的存在时间
 void eatFruit(MapStatus &mapSta,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps)
 {
-	int** tmpMap = ps->tmpMap[0];		//backup map data
+	//writeMap(pMap,ps);
+	int** tmpMap = ps->tmpMap[2];		//backup map data
 	for(int i=0;i<ps->Height;i++)
 	{
 		memcpy(tmpMap[i],pMap[i],sizeof(int)*ps->Width);
 	}
 
 	int snakeCount = ps->ii->SnakeCount;
-	POSITION **nodes = ps->nodes;
+	POSITION **nodes = (POSITION **)ps->nodes;
 	int firstNode[MAXSNAKECOUNT];
 	int lastNode[MAXSNAKECOUNT];
 	int count[MAXSNAKECOUNT];
@@ -69,7 +70,7 @@ void eatFruit(MapStatus &mapSta,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps)
 		}
 	}
 
-	if( haveEaten ){
+	if( haveEaten && distToFruit+info->Fruit.ExistTime < MAXEXISTTIME+1){
 		AISNAKE * snake= &info->SnakeArr[who];
 		mapSta.status[who].canEatFruit = true;
 		mapSta.status[who].distToFruit = distToFruit;
