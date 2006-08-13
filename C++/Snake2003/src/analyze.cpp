@@ -49,7 +49,8 @@ void getLiving(MapStatus& current,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PL
 	//在我身体较短的时候，我不吃使自己的身体的长度变成奇数的果子
 	AISNAKE *mySnake= &info->SnakeArr[ps->ii->ID];
 	if( who == ps->ii->ID && mySnake->Length < ps->MaxLength 
-		&& (mySnake->Length+info->Fruit.Value)%2 == 1)
+		&& (mySnake->Length+info->Fruit.Value)%2 == 1
+		&& ps->ii->TotalTime-info->CurTime > 200 )
 	{
 		status[who].canEatFruit = false;
 		status[who].distToFruit = 51;
@@ -58,7 +59,7 @@ void getLiving(MapStatus& current,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PL
 	//比较生死
 	for(id=0;id<ps->ii->SnakeCount;id++)
 	{
-		if( status[id].space > info->SnakeArr[id].Length*3/2 || status[id].space >= ps->ii->TotalTime - info->CurTime){
+		if( status[id].space > info->SnakeArr[id].Length*2 || status[id].space >= ps->ii->TotalTime - info->CurTime){
 			status[id].safe = true;
 			status[id].dead = false;
 		}else if( status[id].space < info->SnakeArr[id].Length && status[id].living <=ps->ii->TotalTime-info->CurTime)
@@ -83,6 +84,7 @@ void getLiving(MapStatus& current,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PL
 		if( nearToNail && snake->Length > 2 ){
 			status[id].safe = true;
 		}
+		if( snake->Length > 100 || snake->Length > 50 && snake->Length%2 == 0 ) status[id].safe = true;
 	}
 
 	//比较看谁先死

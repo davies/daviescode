@@ -45,7 +45,10 @@ PLAYER_STRUCT* CALLBACK player_create(MAPFILESTRUCT* mfs, INITINFO* ii)
 	}else {
 		ps->MaxPaths = 150;
 	}
-	ps->MaxLength = 20;
+	if( Height == 28 )
+		ps->MaxLength = 300;
+	else 
+		ps->MaxLength = 20;
 
 	return ps;
 }
@@ -55,8 +58,6 @@ int CALLBACK player_judge(PLAYER_STRUCT* ps, PLAYER_INFO* pi)
 	//在这里加入你自己的判断代码，决定走的方向direction
 
 	ps->depth = getDepth(ps,pi);
-
-	ps->depth = 1;
 	MapStatus result = Search(0,ps->ii->ID,ps,pi);
 
 	return result.move[ps->ii->ID]-1;

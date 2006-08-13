@@ -44,22 +44,18 @@ void Choose(int ID,MapStatus &best,MapStatus &newVal,MAP_INFO *info,PLAYER_STRUC
 			if(best2->space <= newVal2->space ) return ;
 		}
 	//最后看吃果子情况
+	}else if( best.score != newVal.score ){
 		if(best.score > newVal.score )return ;
 	}else if( best2->safe != newVal2->safe ){
 		if( !best2->safe ) return ;
-	}else if( best.score != newVal.score ){
 	}else if( best1->safe != newVal1->safe ){
 		if( best1->safe ) return ;
-	}else if(!best1->safe && !best2->safe ){
+	}else if(!best1->safe || !best2->safe ){
 		if( best1->space - best2->space != newVal1->space - newVal2->space ){
 			if( best1->space - best2->space > newVal1->space - newVal2->space ) return ;
 		}else if(best2->space != newVal2->space ){
 			if( best2->space < newVal2->space ) return ;
 		}
-	}else if( !best2->safe && abs(best2->space-newVal2->space) > 0.1*best2->space ){
-		if( best2->space-newVal2->space < 0 ) return ;
-	}else if( !best1->safe && abs(best1->space-newVal1->space) > 0.1*best1->space ){
-		if( best1->space-newVal1->space > 0 ) return ;
 	}else {
 		if(info->SnakeArr[ID].Length < ps->MaxLength 
 			|| (info->ResultInfo[ID].Score < info->ResultInfo[1-ID].Score && info->CurTime > ps->ii->TotalTime/3)
