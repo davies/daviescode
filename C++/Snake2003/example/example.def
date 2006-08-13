@@ -1,0 +1,4 @@
+LIBRARY example.dll
+EXPORTS player_create @1
+player_judge @2
+player_destroy @3
