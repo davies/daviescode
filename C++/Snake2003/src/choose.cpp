@@ -30,34 +30,42 @@ void Choose(int ID,MapStatus &best,MapStatus &newVal,MAP_INFO *info,PLAYER_STRUC
 		//对方死
 		if( best.score != newVal.score ){
 			if(best.score >= newVal.score) return ;
+		}else if( best2->space != newVal2->space ){
+			if(best2->space < newVal2->space ) return ;
+		}else if(best2->living != newVal2->living ){
+			if( best2->living < newVal2->living ) return ;
 		}else if( best1->canEatFruit != newVal1->canEatFruit ){
 			if(best1->canEatFruit ) return ;
 		}else if( best1->canEatFruit && best1->distToFruit != newVal1->distToFruit){
 			if( best1->distToFruit <= newVal1->distToFruit )	return ;
-		}else if( best1->space != newVal1->space ){
-			if(best1->space >= newVal1->space ) return ;
 		}else if(best1->living != newVal1->living ){
 			if( best1->living >= newVal1->living ) return ;
 		}else if(best2->space != newVal2->space ){ //压缩对方的控制区域
 			if(best2->space <= newVal2->space ) return ;
 		}
 	//最后看吃果子情况
+		if(best.score > newVal.score )return ;
 	}else if( best2->safe != newVal2->safe ){
 		if( !best2->safe ) return ;
+	}else if( best.score != newVal.score ){
 	}else if( best1->safe != newVal1->safe ){
 		if( best1->safe ) return ;
-	}else if( best.score != newVal.score ){
-		if(best.score >= newVal.score )return ;
+	}else if(!best1->safe && !best2->safe ){
+		if( best1->space - best2->space != newVal1->space - newVal2->space ){
+			if( best1->space - best2->space > newVal1->space - newVal2->space ) return ;
+		}else if(best2->space != newVal2->space ){
+			if( best2->space < newVal2->space ) return ;
+		}
+	}else if( !best2->safe && abs(best2->space-newVal2->space) > 0.1*best2->space ){
+		if( best2->space-newVal2->space < 0 ) return ;
+	}else if( !best1->safe && abs(best1->space-newVal1->space) > 0.1*best1->space ){
+		if( best1->space-newVal1->space > 0 ) return ;
 	}else {
 		if(info->SnakeArr[ID].Length < ps->MaxLength 
-			|| info->ResultInfo[ID].Score < info->ResultInfo[1-ID].Score 
-			|| ps->ii->TotalTime-info->CurTime<300 || info->Fruit.Value > 25 ){
+			|| (info->ResultInfo[ID].Score < info->ResultInfo[1-ID].Score && info->CurTime > ps->ii->TotalTime/3)
+			|| ps->ii->TotalTime-info->CurTime<200 || info->Fruit.Value > 25 ){
 			//如果长度较短，则尽快吃果子
-			if( !best2->safe ) {
-				if(best2->space <= newVal2->space ) return ;
-			}else if( !best1->safe ) {
-				if(best1->space >= newVal1->space) return ;
-			}else if( best1->canEatFruit != newVal1->canEatFruit ){
+			if( best1->canEatFruit != newVal1->canEatFruit ){
 				if( best1->canEatFruit ) return ;
 			}else if(best1->canEatFruit ) {
 				if( best1->distToFruit != newVal1->distToFruit ){
@@ -73,18 +81,14 @@ void Choose(int ID,MapStatus &best,MapStatus &newVal,MAP_INFO *info,PLAYER_STRUC
 				}
 			}
 		}else {
-			if( !best2->safe ) {
-				if(best2->space <= newVal2->space ) return ;
-			}else if( !best1->safe ) {
-				if(best1->space >= newVal1->space) return ;
-			}else if( best2->space != newVal2->space ){
-				if( best2->space <= newVal2->space ) return ;
+			if( best2->space != newVal2->space ){
+				if( best2->space < newVal2->space ) return ;
 			}else if( best1->canEatFruit != newVal1->canEatFruit ){
 				if( best1->canEatFruit ) return ;
-			}else if( best1->space != newVal1->space ){
-				if( best1->space >= newVal1->space ) return ;
-			}else if( best1->distToFruit != newVal1->distToFruit ){
-				if( best1->distToFruit <= newVal1->distToFruit ) return ;
+			}else if( best1->space != newVal1->space){
+				if( best1->space> newVal1->space) return ;
+			}else if( best1->canEatFruit && best1->distToFruit != newVal1->distToFruit ){
+				if( best1->distToFruit < newVal1->distToFruit ) return ;
 			}
 		}
 	}

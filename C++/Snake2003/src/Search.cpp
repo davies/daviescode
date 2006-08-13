@@ -1,6 +1,5 @@
 #include "search.h"
 #include "analyze.h"
-#include "getFruit.h"
 
 void InitMap( int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 {
@@ -20,9 +19,6 @@ void InitMap( int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 		for(int j=0;j<length;j++)
 			info->SnakeArr[i].Pos[length-j-1] = pi->SnakeArr[i]->Pos[j];
 	}
-	//读取纪录
-	if( ps->load )
-		loadMap(ps,info);
 
 	//put marks of floor and wall
 	for(i=0;i<Height;i++)
@@ -51,20 +47,10 @@ void InitMap( int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 //搜索当前的行动方式，并评价
 MapStatus Search (int depth,int ID,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 {
-	MAP_INFO *info = ps->info[0];
-	int **pMap	=	ps->pMap[0];
-	int Height = ps->Height;
-	int Width = ps->Width;
-	//writeMap(pMap,ps);
+	MAP_INFO *info = ps->info;
+	int **pMap	=	ps->pMap;
 	if(depth==0)		//copy player info
 		InitMap(pMap,info,ps,pi);
-#ifdef LOG
-	if( depth == 0)
-	{
-		Log("\n",ps);
-		Log(info->CurTime,ps);
-	}
-#endif
 
 	AISNAKE * mySnake = &info->SnakeArr[ID] ;
 
@@ -80,35 +66,34 @@ MapStatus Search (int depth,int ID,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 	int fruitCol = info->Fruit.Pos.Col;
 	for(int i=0;i<3;i++)
 	{
-	//writeMap(pMap,ps);
 		//移动到新位置,如果是墙壁，或者是蛇的身体，或出界，则continue
 		int row1 = myRow +Direct[(mySnake->Direction+i+3) % 4][0];
 		int col1 = myCol +Direct[(mySnake->Direction+i+3) % 4][1];
-		if( row1 <0 || row1 >= Width || col1<0 || col1>=Height 
+		if( row1 <0 || row1 >= ps->Height || col1<0 || col1>=ps->Width 
 			|| pMap[row1][col1] < -1-(int)(depth/2) )//当为-1时，追尾
 		{
-			MapStatus newVal;
-			memset(&newVal,0,sizeof(MapStatus));
-			newVal.move[ID] = i;
-			newVal.status[ID].dead = true;
-			newVal.status[1-ID].dead = false;
-			newVal.status[ID].living = -1;
-			newVal.status[ID].space = -1;
-			AISNAKE *hisSnake = &info->SnakeArr[1-ID];
-			int hisRow = hisSnake->Pos[hisSnake->HeadPos].Row;
-			int hisCol = hisSnake->Pos[hisSnake->HeadPos].Col;
-			if( info->Fruit.Value > 0 && abs(hisRow-fruitRow) + abs(hisCol-fruitCol) <2 ){
-				newVal.score = -info->Fruit.Value;
-			}else{
-				newVal.score = 0;
+			if( depth %2 == 0){ //如果是我方的策略
+				MapStatus newVal;
+				memset(&newVal,0,sizeof(MapStatus));
+				newVal.move[ID] = i;
+				newVal.status[ID].dead = true;
+				newVal.status[1-ID].dead = false;
+				newVal.status[ID].living = -1;
+				newVal.status[ID].space = -1;
+				AISNAKE *hisSnake = &info->SnakeArr[1-ID];
+				int hisRow = hisSnake->Pos[hisSnake->HeadPos].Row;
+				int hisCol = hisSnake->Pos[hisSnake->HeadPos].Col;
+				if( info->Fruit.Value > 0 && abs(hisRow-fruitRow) + abs(hisCol-fruitCol) <2 ){
+					newVal.score = -info->Fruit.Value;
+				}else{
+					newVal.score = 0;
+				}
+				Choose(ID,best,newVal,info,ps);
 			}
-			Choose(ID,best,newVal,info,ps);
-			//writeMap(pMap,ps);
 			continue;
 		}
 		//假定走到新的状态
 		mySnake->HeadPos ++;
-		//writeMap(pMap,ps);
 		mySnake->Pos[mySnake->HeadPos].Row = row1;
 		mySnake->Pos[mySnake->HeadPos].Col = col1;
 
@@ -137,7 +122,7 @@ MapStatus Search (int depth,int ID,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 				mySnake->Pos[j] = mySnake->Pos[j+1];
 			mySnake->Length += info->Fruit.Value;
 
-			score = info->Fruit.Value -depth/2;
+			score = info->Fruit.Value ;
 			info->Fruit.Value = 0;	//no fruits
 		}
 
@@ -173,7 +158,6 @@ MapStatus Search (int depth,int ID,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 			if( who < 2 && newVal.status[who].canEatFruit ){
 				//假定以最快速度吃果子				
 				AISNAKE *snake = &info->SnakeArr[who];
-				//writeMap(pMap,ps);
 				int value = info->Fruit.Value;
 				int dist = newVal.status[who].distToFruit;
 				int last = snake->HeadPos+1; //身体增长的最后一个
@@ -187,16 +171,13 @@ MapStatus Search (int depth,int ID,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 					}else 
 						break ;
 				}
-				//writeMap(pMap,ps);
 				snake->Length += value;
-				snake->HeadPos +=value;
 
 				MapStatus newVal2;
 				memset(&newVal2,0,sizeof(MapStatus));
 				getLiving(newVal2,pMap,info,ps,pi);
 				Choose(who,newVal,newVal2,info,ps);
 
-				snake->HeadPos -=value;
 				snake->Length -= value;
 				//消除吃果子的影响
 				for( i= snake->HeadPos;i>=last;i--)
@@ -207,23 +188,14 @@ MapStatus Search (int depth,int ID,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 				}
 			}
 		}else{
-			//writeMap(pMap,ps);
 			newVal = Search(depth+1,1-ID,ps,pi);
-			//writeMap(pMap,ps);
-		//恢复当前回合中的行动策略
 		}
+		//恢复当前回合中的行动策略
 		newVal.move[ID] = i;
-		//writeMap(pMap,ps);
 		newVal.status[ID].living ++;
 		newVal.status[ID].space ++;
 		newVal.score =-newVal.score + score;
-#ifdef LOG
-		//Log("hisBest",ps);
-		if( depth == 0)
-			Log(newVal,ps);
-		//Log("",ps);
-#endif
-		//选取己方在当前形势的最好评价
+
 		Choose(ID,best,newVal,info,ps);
 
 		if( depth % 2 == 1){ //对方的回合
@@ -254,33 +226,12 @@ MapStatus Search (int depth,int ID,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 				else 
 					break;
 			}
-			//writeMap(pMap,ps);
 		}
 		//恢复我的蛇原来的状态
 		mySnake->HeadPos --;
 		mySnake->Direction = oldDir1;
 		pMap[row1][col1] = old1;
 	}
-#ifdef LOG
-	if( depth == 0 ){
-		//writeMap(ps->pMap[depth],ps);
-		Log("Best",ps);
-		Log(best,ps);
-		Log("",ps);
-	}
-	if( depth == 0 && pi->CurTime == ps->ii->TotalTime ){
-		FILE * fp = ps->logFile ;
-		fprintf(fp,"\n\n\n战术统计:\n");
-		for(int i=0;i<ps->ii->SnakeCount;i++){
-			fprintf(fp,"ID%d:\n",i);
-			fprintf(fp,"Dead:%d\n",pi->ResultInfo[i].TimesOfDie);
-			fprintf(fp,"Eat:%d\n",pi->ResultInfo[i].FruitsEatten);
-			fprintf(fp,"MaxLength:%d\n",pi->ResultInfo[i].MaxLength);
-			fprintf(fp,"MaxScore:%d\n",pi->ResultInfo[i].MaxScore);
-			fprintf(fp,"Score:%d\n",pi->ResultInfo[i].Score);
-		}
-	}
-#endif
 
 	return best;
 }

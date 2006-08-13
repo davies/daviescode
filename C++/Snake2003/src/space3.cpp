@@ -6,9 +6,9 @@ int getSpace(int **pMap,int mark,PLAYER_STRUCT *ps)
 	int **tmpMap = ps->tmpMap[2];
 	for(int i=0;i<ps->Height;i++)
 		memset(tmpMap[i],0,sizeof(int)*ps->Width);
-	//writeMap(pMap,ps);
+
 	int count = 0;
-	for(int Row=0;Row<ps->Height;Row++)
+	for(int Row=0;Row<ps->Height;Row++){
 		for(int Col=0;Col<ps->Width;Col++)
 		{
 			if( pMap[Row][Col] != mark ) continue;
@@ -21,7 +21,9 @@ int getSpace(int **pMap,int mark,PLAYER_STRUCT *ps)
 				if( pMap[row][col] == mark )tmpMap[row][col] ++;
 			}
 		}
+	}
 	for(Row=0;Row<ps->Height;Row++)
+	{
 		for(int Col=0;Col<ps->Width;Col++)
 		{
 			if( tmpMap[Row][Col] == 0 ){
@@ -52,6 +54,7 @@ int getSpace(int **pMap,int mark,PLAYER_STRUCT *ps)
 				}
 			}
 		}
-	//writeMap(tmpMap,ps);
+	}
 	return count;
 }
+

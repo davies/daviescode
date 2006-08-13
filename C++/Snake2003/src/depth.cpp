@@ -1,11 +1,10 @@
 #include "search.h"
 #include "analyze.h"
-#include "getFruit.h"
 
 void trySearch (int depth,PLAYER_STRUCT *ps,PLAYER_INFO *pi)
 {
-	MAP_INFO *info = ps->info[0];
-	int **pMap	=	ps->pMap[0];
+	MAP_INFO *info = ps->info;
+	int **pMap	=	ps->pMap;
 	int Height = ps->Height;
 	int Width = ps->Width;
 	
@@ -85,7 +84,7 @@ int getDepth( PLAYER_STRUCT *ps,PLAYER_INFO *pi )
 		ps->depth = i;
 		ps->paths = 0;
 		trySearch(0,ps,pi);
-		if( ps->paths > ps->MaxPaths ){
+		if( ps->paths*i/3 > ps->MaxPaths ){
 			ps->paths = oldPaths;
 			return i-1 ;
 		}else{

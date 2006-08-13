@@ -5,7 +5,7 @@
 #include "analyze.h"
 #include "search.h"
 
-#define LOG
+//#define LOG
 
 void writeMap(int **pMap,PLAYER_STRUCT *ps);
 void Log(MapStatus &map,PLAYER_STRUCT *ps);

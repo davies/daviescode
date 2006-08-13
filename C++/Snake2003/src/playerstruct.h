@@ -105,17 +105,15 @@ struct PLAYER_STRUCT{
 		//在这里加入你需要的全局变量
 		DWORD	Height;
 		DWORD	Width;
-		int** pMap[MAXDEPTH+1];			//搜索用地图
+		int** pMap;//[MAXDEPTH+1];			//搜索用地图
 		int** tmpMap[3];				//临时地图
-		MAP_INFO *info[MAXDEPTH+1];		//搜索的地图信息
+		MAP_INFO *info;		//搜索的地图信息
 		POSITION *nodes[3];				//纪录经过的节点
 		int count[2];
 		int depth;						//当前搜索深度
 		int MaxPaths;
 		int MaxLength;
 		int paths;						//当前搜索路径数
-		FILE *logFile;
-		bool load;
 };
 
 #endif

@@ -3,13 +3,14 @@
 //从某一点开始标志最少步数
 int markMin(int inRow,int inCol,int dist,int id,int **pMap,int** minMap,int **markMap,MAP_INFO *info,PLAYER_STRUCT *ps)
 {
-	POSITION *nodes = ps->nodes[2];
 	//准备工作
+	POSITION *nodes = ps->nodes[2];
 	int last=1;
 	nodes[0].Row = inRow;
 	nodes[0].Col = inCol;
 	minMap[inRow][inCol] = dist;
 	markMap[inRow][inCol] = -2+id;
+
 	for ( int firstNode=0;firstNode<last;firstNode++)
 	{
 		int Row = nodes[firstNode].Row;		//old
@@ -35,7 +36,7 @@ int markMin(int inRow,int inCol,int dist,int id,int **pMap,int** minMap,int **ma
 			}
 		}
 	}
-	//writeMap(minMap,ps);
+
 	return last;
 }
 
@@ -47,7 +48,7 @@ int markMax(int id,int** pMap,MAP_INFO *info,PLAYER_STRUCT* ps)
 	int **maxMap = ps->tmpMap[1];
 	POSITION *pNode = ps->nodes[id]; //在getSpace1()中已经记录了可以到达的区域
 	int *count = ps->count;
-	//writeMap(pMap,ps);
+
 	AISNAKE *snake = &info->SnakeArr[id];
 	pNode[0] = snake->Pos[snake->HeadPos];
 	int first = 0;
@@ -55,27 +56,21 @@ int markMax(int id,int** pMap,MAP_INFO *info,PLAYER_STRUCT* ps)
 	maxMap[pNode[0].Row][pNode[0].Col] = 1;
 
 	int mark = -2+id;
-	//writeMap(maxMap,ps);
 	for( ;first < last;first++)
 	{
 		int inRow = pNode[first].Row;
 		int inCol = pNode[first].Col;
+
 		//周围有多少个可以走的
 		int num = 0;
 		int lastDir = 0;
 		bool oppsite = false;
-		//writeMap(maxMap,ps);
 		for( int j=0;j<4;j++)
 		{
-			//writeMap(minMap,ps);
 			int newRow = inRow + Direct[j][0];		//new
 			int newCol = inCol + Direct[j][1];
 			if( newRow <0 || newRow >=ps->Height || newCol <0 || newCol>=ps->Width ) continue;  //判断越界
 			//看周围是否有可以突破的地方
-			//*****************************************************
-			//有问题！！！！
-			//有可能突破的点不是最好的点，但是将最好的点给覆盖了
-			//******************************************************
 			if( (maxMap[newRow][newCol] == 0 || maxMap[newRow][newCol]==-1-id ) //还没有被包括进来
 				&& pMap[newRow][newCol]<0 && pMap[newRow][newCol]+maxMap[inRow][inCol]>= -ps->depth  )
 			{
@@ -91,7 +86,6 @@ int markMax(int id,int** pMap,MAP_INFO *info,PLAYER_STRUCT* ps)
 					if( newCount+last > snake->Length * 2 ){
 						for(int i=0;i<last;i++)
 							maxMap[pNode[i].Row][pNode[i].Col] = mark;
-						//writeMap(minMap,ps);
 						return 0;
 					}
 					
@@ -114,7 +108,10 @@ int markMax(int id,int** pMap,MAP_INFO *info,PLAYER_STRUCT* ps)
 		{
 			int newRow = inRow + dir[j][0];		//new
 			int newCol = inCol + dir[j][1];
-			if( newRow <0 || newRow >=ps->Height || newCol <0 || newCol>=ps->Width ) continue;  //判断越界
+			if( newRow <0 || newRow >=ps->Height || newCol <0 || newCol>=ps->Width ){
+				bit >>= 1;
+				continue;  //判断越界
+			}
 			if( maxMap[newRow][newCol] == mark ){
 				bits |= bit; //如果该方向的格子可以到达，则将该位置为1
 			}
@@ -178,12 +175,10 @@ int markMax(int id,int** pMap,MAP_INFO *info,PLAYER_STRUCT* ps)
 		int oldLast = last;
 		//寻找当前的活动区域
 		//以入口点为基点向外扩展
-		for( j=0;j<firstZero;j++) //连续的区域为firstDir 到 lastDir
+		for( j=(maxDir+1)/2;j<=(firstZero-1+maxDir)/2;j++) //连续的区域为firstDir 到 lastDir
 		{
-			int dir = (j+maxDir)%8;
-			if( dir % 2 == 1) continue;
-			int row2 = inRow + Direct[dir/2][0];		//new
-			int col2 = inCol + Direct[dir/2][1];
+			int row2 = inRow + Direct[j%4][0];		//new
+			int col2 = inCol + Direct[j%4][1];
 			if( row2 <0 || row2 >=ps->Height || col2 <0 || col2>=ps->Width ) continue;  //判断越界
 			//只能加入连续得点
 			if( maxMap[row2][col2] == mark) {
@@ -265,7 +260,6 @@ int markMax(int id,int** pMap,MAP_INFO *info,PLAYER_STRUCT* ps)
 		//标记最慢到达时间
 		for(qFirst = oldLast;qFirst<last;qFirst++)
 		{
-			//writeMap(maxMap,ps);
 			int num = last - oldLast;
 			maxMap[pNode[qFirst].Row][pNode[qFirst].Col] = maxMap[inRow][inCol] + num ;
 			if( (num + pNode[qFirst].Row - inRow +pNode[qFirst].Col-inCol)%2 == 1)

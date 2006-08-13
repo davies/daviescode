@@ -19,6 +19,4 @@ struct MapStatus{
 
 void getLiving(MapStatus& current,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PLAYER_INFO *pi);	//得到当前双方的生存空间，
 
-void getControlEara(MapStatus& current,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PLAYER_INFO *pi);
-
 #endif
