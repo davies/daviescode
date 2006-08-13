@@ -1,3 +1,8 @@
+//*************************************************************************
+//2003年智能体大赛参赛程序——决不贪吃
+//by Davies , 2003-3-20
+//*************************************************************************
+
 #ifndef GREEDY_SNAKE_HPP
 #define GREEDY_SNAKE_HPP
 
@@ -81,18 +86,19 @@ struct MAPFILESTRUCT								//player初始化时传给player的结构。
 	MAPFILEHEAD		mfh;							//地图信息
 };
 
+//另外定义的舍得结构，由SNAKE转化而来，蛇的身体用的是静态数组，便于copy
 struct AISNAKE							//用于描述Snake的结构
 {
 	   DWORD		Direction;			//Snake头方向
 	   DWORD		Length;				//Snake的长度
 	   DWORD		HeadPos;			//Snake的头的位置
-	   POSITION	    Pos[MAXLENGTH];		//按照从头到尾的顺序,存储着Snake的位置
-										//其中以HeadPos开头得一串表示蛇的位置
+	   POSITION	    Pos[MAXLENGTH];		//存储着Snake的位置，其中下标为HeadPos的点表示蛇头的位置
 };
 
+//存储地图信息，由PLAYER_INFO转化而来，自己可以修改
 struct MAP_INFO									//每个回合传给选手的结构
 {
-	AISNAKE			SnakeArr[2];		//指向每条蛇的指针数组
+	AISNAKE			SnakeArr[2];					//指向每条蛇的指针数组
 	FRUIT			Fruit;							//Fruit信息
 	SNAKERESULT		ResultInfo[MAXSNAKECOUNT];		//
 	DWORD			CurTime;						//当前的回合数
@@ -102,17 +108,17 @@ struct PLAYER_STRUCT{
 		INITINFO*		ii;
 		MAPFILESTRUCT*	mfs;
 		
-		//在这里加入你需要的全局变量
-		DWORD	Height;
-		DWORD	Width;
-		int** pMap;//[MAXDEPTH+1];			//搜索用地图
-		int** tmpMap[3];				//临时地图
-		MAP_INFO *info;		//搜索的地图信息
-		POSITION *nodes[3];				//纪录经过的节点
-		int count[2];
+		//全局变量
+		DWORD	Height;					//地图高度
+		DWORD	Width;					//地图宽度
+		int** pMap;						//搜索时用的地图
+		int** tmpMap[3];				//临时地图，分别记录作双方的最短距离、一方的控制区域
+		MAP_INFO *info;					//搜索的地图信息
+		POSITION *nodes[3];				//纪录搜索时的节点
+		int count[2];					//记录双方的空间大小
 		int depth;						//当前搜索深度
-		int MaxPaths;
-		int MaxLength;
+		int MaxPaths;					//最大搜索支路树
+		int MaxLength;					//最大长度
 		int paths;						//当前搜索路径数
 };
 

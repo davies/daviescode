@@ -1,3 +1,12 @@
+//*************************************************************************
+//2003年智能体大赛参赛程序——决不贪吃
+//by Davies , 2003-3-20
+//*************************************************************************
+
+//*************************************************************************
+//分析当前地图的形势，看双方的死活、是否吃到果子等
+//*************************************************************************
+
 #include "playerstruct.h"
 #include "analyze.h"
 #include "search.h"
@@ -16,10 +25,8 @@ void getLiving(MapStatus& current,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PL
 	}
 
 	//计算各自的空间
-	for( id=0;id<ps->ii->SnakeCount;id++){
+	for( id=0;id<ps->ii->SnakeCount;id++)
 		status[id].space = getSpace(ps->tmpMap[1],-2+id,ps);
-
-	}
 
 	//更新吃果子情况
 	//看谁最先到达果子处
@@ -39,6 +46,7 @@ void getLiving(MapStatus& current,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PL
 		}
 	}
 	
+	//看能否在果子消失前或者比赛结束前吃到果子
 	if( info->Fruit.Value > 0 && minDist + info->Fruit.ExistTime <= MAXEXISTTIME
 		&& minDist <= ps->ii->TotalTime-info->CurTime ){
 			status[who].canEatFruit = true;
@@ -56,9 +64,11 @@ void getLiving(MapStatus& current,int** pMap,MAP_INFO *info,PLAYER_STRUCT *ps,PL
 		status[who].distToFruit = 51;
 	}
 
-	//比较生死
+	//比较双方的生死
 	for(id=0;id<ps->ii->SnakeCount;id++)
 	{
+		//如果所控制的空间小于身体长度，则会死，
+		//如果大于两倍身体长度，则认为很安全，否则认为很危险
 		if( status[id].space > info->SnakeArr[id].Length*2 || status[id].space >= ps->ii->TotalTime - info->CurTime){
 			status[id].safe = true;
 			status[id].dead = false;
