@@ -80,7 +80,7 @@ def output(result):
 
 def main():
     # use a number to identity the direnction of a cube, four bits per side
-    # Top     Bottom   Front   Left    Back    Right
+    # Top     Bottom   Front   Back     Left   Right
     # 0x01 R
     # 0x02 G
     # 0x04 B
