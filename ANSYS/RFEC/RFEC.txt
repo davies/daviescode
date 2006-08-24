@@ -1,0 +1,126 @@
+/clear
+/prep7
+/title, Eddy Current 2D
+
+/pnum,area,1
+
+n=250
+len=100
+D=18
+
+!物理模型
+rectng, 0, 14, 0, len
+rectng, 14, D, 0, len
+rectng, D, D*5, 0, len
+rectng, D*5, D*6, 0, len
+rectng, 0, D*3, len, len+D*2
+rectng, 0, D*3, len+D*2, len+D*3
+cyl4, D*3, len, D*2, 90
+cyl4, D*3, len, D*3, 90, D*2
+aglue,all
+rectng, 4, 10, 0, 10
+aovlap,all
+
+!定义元件
+et,1,53,,,1   !空气，管道
+et,2,53,1,,1  !线圈，加电流负载
+et,3,53,2,,1  !线圈，加电压负载
+et,4,110,,,1  !远场空气
+
+!定义材料
+emunt,mks
+mp,murx,1,1     !空气
+mp,murx,2,1        !线圈
+mp,rsvx,2,3.00e-8  !线圈
+mp,murx,3,129.5    !管道
+mp,rsvx,3,5.96e-10  !管道
+
+
+!指定单元和材料类型
+asel,s,area,,2
+aatt,2,1,3     !指定线圈的材料和单元类型
+asum
+*get,a,area,,area  !计算线圈面积
+!线圈常数
+r,1,a*2,n,,1,1    !线圈参数，面积为2a,匝数为n, 填充系数为1
+
+asel,s,area,,10
+aatt,3,1,1    !管道
+
+asel,s,area,,3
+asel,a,area,,14,15
+asel,a,area,,9
+aatt,1,1,1   !空气
+
+asel,s,area,,11,13
+aatt,1,1,4   !远场空气
+
+asel,all
+aplot
+
+!划分网格
+
+!远场
+lsel,s,loc,y,len+D*2+D/2
+lsel,a,loc,x,D*5+D/2
+lesize,all,,,1
+esize,,10
+mshape,0,2d
+mshkey,1
+asel,s,type,,4
+amesh,all
+asel,all
+
+!线圈
+esize,1
+amesh,2
+
+!管壁
+mshkey,0
+smrtsize,.5
+mshape,1,2d
+amesh,10
+
+!管道内外
+mshape,0,2d
+smrtsize,3
+amesh,3
+amesh,14,15
+amesh,9
+
+!耦合电流自由度
+esel,s,mat,,2
+nsle,s,all
+cp,1,curr,all
+allsel,all
+
+!设定边界条件
+local,11,1,D*3,len
+nsel,s,loc,x,D*3
+csys,0
+nsel,r,loc,x,D*3,D*6
+nsel,r,loc,y,len,len+D*3
+nsel,a,loc,x,D*6
+nsel,a,loc,y,len+D*3
+sf,all,inf
+
+nsel,s,loc,x,0
+d,all,az,0
+
+!完成
+allsel,all
+finish
+
+!求解
+/solu
+antype,harmic
+esel,s,mat,,2
+bfe,all,vltg,,120 !加载荷，电流密度 5.5E6
+esel,all
+harfrq,60         ! 设定频率 60HZ
+solve
+finish
+
+!显示
+/post1
+plf2d
