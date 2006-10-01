@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-AUTHOR = "Davies Liu (davies.liu@gmail.com)"
 DATE = "8/2/2006"
 
 """
