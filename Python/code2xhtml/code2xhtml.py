@@ -1,9 +1,9 @@
 #!/usr/bin/python
-
+"""
 # source2xhtml
-# by davies.liu@gmail
+# by Davies Liu
 #  2005/5/20
-
+"""
 import re,string
 import keyword
 
