@@ -1,29 +1,50 @@
-/clear
 /prep7
 /title, Eddy Current 2D
 
 /pnum,area,1
 
-n=250
-len=100
-D=18
+n=100
+ID=0.70
+DD=0.07
+OD=ID+DD
+W=DD*3
+WW=0.01
+REMOTE=2.5
+len=OD*10
 
 !物理模型
-rectng, 0, 14, 0, len
-rectng, 14, D, 0, len
-rectng, D, D*5, 0, len
-rectng, D*5, D*6, 0, len
-rectng, 0, D*3, len, len+D*2
-rectng, 0, D*3, len+D*2, len+D*3
-cyl4, D*3, len, D*2, 90
-cyl4, D*3, len, D*3, 90, D*2
+rectng, 0, DD*7, 0, len
+rectng, DD*7, ID, 0, len
+rectng, ID, OD, 0, len
+rectng, OD, DD*15, 0, len
+rectng, DD*15, OD*5, 0, len
+rectng, OD*5, OD*10, 0, len
+
+rectng, 0, OD*4, len, len+OD
+rectng, 0, OD*4, len+OD, len+OD*6
+cyl4, OD*4, len, OD*1, 90
+cyl4, OD*4, len, OD*6, 90, OD
 aglue,all
-rectng, 4, 10, 0, 10
+
+rectng, 0, ID, len-DD, len  ! 管道末端
+
+rectng, ID-DD, ID-DD/5, 0, W/3 ! 线圈
+rectng, ID-DD/5, ID, 0, W/3
+
+rectng, ID, OD, 0, W   ! 激励源附近
+rectng, OD, OD+DD, 0, W
+
+! 远场区缺陷
+rectng, ID, OD, OD*REMOTE, OD*REMOTE+W
+rectng, ID+DD*.8, OD, OD*REMOTE+W/4, OD*REMOTE+W/4+WW
+rectng, ID+DD*.5, OD, OD*REMOTE+W/2, OD*REMOTE+W/2+WW
+rectng, ID+DD*.2, OD, OD*REMOTE+W*3/4, OD*REMOTE+W*3/4+WW
+rectng, OD, OD+DD, OD*REMOTE, OD*REMOTE+W
+
 aovlap,all
 
 !定义元件
 et,1,53,,,1   !空气，管道
-et,2,53,1,,1  !线圈，加电流负载
 et,3,53,2,,1  !线圈，加电压负载
 et,4,110,,,1  !远场空气
 
@@ -32,52 +53,41 @@ emunt,mks
 mp,murx,1,1     !空气
 mp,rsvx,2,3.00e-8  !线圈
 mp,murx,2,1        !线圈
-mp,rsvx,3,5.96e-6  !管道
-!mp,murx,3,129.5   !管道
-tb,bh,3,,24        !管道的B-H
+mp,rsvx,3,15e-8  !管道
+mp,murx,3,70     !管道
+mp,rsvx,4,15e-8  !磁化窗
+mp,murx,4,70     !磁化窗
+mp,rsvx,5,15e-8  !缺陷
+mp,murx,5,70     !缺陷
 
-tbpt,,405,0.8
-tbpt,,468,0.9
-tbpt,,550,1.0
-tbpt,,670,1.1
-tbpt,,840,1.2
-tbpt,,1060,1.3
-tbpt,,1223,1.35
-tbpt,,1415,1.4
-tbpt,,1722,1.45
-tbpt,,2130,1.5
-tbpt,,2671,1.55
-tbpt,,3480,1.6
-tbpt,,5952,1.7
-tbpt,,7650,1.75
-tbpt,,10105,1.8
-tbpt,,13000,1.85
-tbpt,,15905,1.9
-tbpt,,26296,2.0
-tbpt,,32901,2.05
-tbpt,,42700,2.1
-tbpt,,61700,2.15
-tbpt,,84295,2.2
-tbpt,,110000,2.25
+
 
 !指定单元和材料类型
-asel,s,area,,2
+asel,s,area,,3
 aatt,2,1,3     !指定线圈的材料和单元类型
 asum
 *get,a,area,,area  !计算线圈面积
 !线圈常数
 r,1,a*2,n,,1,1    !线圈参数，面积为2a,匝数为n, 填充系数为1
 
-asel,s,area,,10
+asel,s,area,,26,27
+asel,a,area,,22,23
 aatt,3,1,1    !管道
 
-asel,s,area,,3
-asel,a,area,,14,15
-asel,a,area,,9
+asel,s,area,,28,33,5
+aatt,4,1,1    !管道磁化窗
+
+asel,s,area,,8,10
+aatt,5,1,1    !远场缺陷
+
+asel,s,area,,15,17
+aatt,1,1,4   !远场空气
+
+asel,all
+asel,u,mat,,2,5
+asel,u,type,,4
 aatt,1,1,1   !空气
 
-asel,s,area,,11,13
-aatt,1,1,4   !远场空气
 
 asel,all
 aplot
@@ -85,10 +95,10 @@ aplot
 !划分网格
 
 !远场
-lsel,s,loc,y,len+D*2+D/2
-lsel,a,loc,x,D*5+D/2
+lsel,s,loc,y,len+OD+OD*5/2
+lsel,a,loc,x,OD*5+OD*5/2
 lesize,all,,,1
-esize,,10
+esize,,20
 mshape,0,2d
 mshkey,1
 asel,s,type,,4
@@ -96,21 +106,77 @@ amesh,all
 asel,all
 
 !线圈
-esize,1
-amesh,2
+esize,DD/10
+asel,s,type,,3
+amesh,all
+asel,all
+
+!缺陷
+esize,WW/3
+asel,s,mat,,5
+amesh,all
+asel,all
+
+!磁化窗
+mshkey,0
+esize,DD/10
+asel,s,mat,,4
+amesh,all
+asel,all
 
 !管壁
-mshkey,0
-smrtsize,.5
-mshape,1,2d
-amesh,10
+esize,DD/5
+asel,s,mat,,3
+amesh,all
+asel,all
+
+
+!管壁
+!lsel,s,loc,x,(ID+OD)/2
+!lesize,all,,,10
+!lsel,s,loc,x,ID
+!lsel,a,loc,x,OD
+!lsel,r,loc,y,0,OD*REMOTE+W
+!lesize,all,DD/2
+!amesh,13,15
+!lsel,s,loc,x,(ID+OD)/2
+!lesize,all,,,4
+!lsel,s,loc,x,ID
+!lsel,a,loc,x,OD
+!lsel,r,loc,y,OD*REMOTE+W,len
+!lesize,all,DD
+!amesh,16
 
 !管道内外
-mshape,0,2d
-smrtsize,3
-amesh,3
-amesh,14,15
-amesh,9
+esize,DD/10
+amesh,24
+esize,DD/5
+amesh,25
+amesh,32
+esize,DD
+smrtsize,5
+amesh,30,31
+esize,DD*2
+amesh,21
+amesh,18
+amesh,29
+amesh,11
+
+!lsel,s,loc,y,0
+!lsel,a,loc,y,len
+!lsel,a,loc,x,0
+!lsel,a,loc,x,OD*3
+!lesize,all,DD
+!lsel,s,loc,y,len
+!lsel,r,loc,x,OD,OD*3
+!lesize,all,DD
+
+!mshkey,0
+!smrtsize,4
+!amesh,2
+!amesh,22
+!amesh,20
+!amesh,12
 
 !耦合电流自由度
 esel,s,mat,,2
@@ -119,13 +185,13 @@ cp,1,curr,all
 allsel,all
 
 !设定边界条件
-local,11,1,D*3,len
-nsel,s,loc,x,D*3
+local,11,1,OD*4,len
+nsel,s,loc,x,OD*6
 csys,0
-nsel,r,loc,x,D*3,D*6
-nsel,r,loc,y,len,len+D*3
-nsel,a,loc,x,D*6
-nsel,a,loc,y,len+D*3
+nsel,r,loc,x,OD*4,OD*10
+nsel,r,loc,y,len,len+OD*6
+nsel,a,loc,x,OD*10
+nsel,a,loc,y,len+OD*6
 sf,all,inf
 
 nsel,s,loc,x,0
@@ -139,13 +205,37 @@ finish
 /solu
 antype,harmic
 esel,s,mat,,2
-bfe,all,vltg,,120 !加载荷，电流密度 5.5E6
+bfe,all,vltg,,12 !加载荷，电流密度 5.5E6
 esel,all
-harfrq,60         ! 设定频率 60HZ
+harfrq,6.4         ! 设定频率 60HZ
 solve
 finish
 
 !显示
 /post1
 set,1
-plf2d
+plf2d,100
+
+padel,ID
+PATH,ID,2,,1000                         
+PPATH,1,,ID,OD              
+PPATH,2,,ID,len            
+PDEF,ID,B,X
+!PCALC,Log,IDLOG,ID
+PLPATH,ID
+
+padel,OD
+PATH,OD,2,,1000
+PPATH,1,,OD+DD,0              
+PPATH,2,,OD+DD,len            
+PDEF,OD,B,SUM
+PCALC,Log,ODLOG,OD
+PLPATH,ODLOG
+
+padel,polar
+PATH,polar,2,,100
+ppath,1,,ID,OD*REMOTE+DD
+ppath,2,,OD,OD*REMOTE+DD
+pdef,polar,B,Y
+!PCALC,Log,plog,polar
+plpath,polar
