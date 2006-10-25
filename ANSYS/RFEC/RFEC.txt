@@ -4,20 +4,20 @@
 /pnum,area,1
 
 n=100
-ID=0.70
-DD=0.07
+ID=0.500
+DD=0.035
 OD=ID+DD
 W=DD*3
-WW=0.01
-REMOTE=2.5
+WW=0.003
+REMOTE=4
 len=OD*10
 
 !物理模型
-rectng, 0, DD*7, 0, len
-rectng, DD*7, ID, 0, len
+rectng, 0, ID*.8, 0, len
+rectng, ID*.8, ID, 0, len
 rectng, ID, OD, 0, len
-rectng, OD, DD*15, 0, len
-rectng, DD*15, OD*5, 0, len
+rectng, OD, OD*1.2, 0, len
+rectng, OD*1.2, OD*5, 0, len
 rectng, OD*5, OD*10, 0, len
 
 rectng, 0, OD*4, len, len+OD
@@ -32,14 +32,14 @@ rectng, ID-DD, ID-DD/5, 0, W/3 ! 线圈
 rectng, ID-DD/5, ID, 0, W/3
 
 rectng, ID, OD, 0, W   ! 激励源附近
-rectng, OD, OD+DD, 0, W
+rectng, OD, OD+DD*2, 0, W
 
 ! 远场区缺陷
 rectng, ID, OD, OD*REMOTE, OD*REMOTE+W
 rectng, ID+DD*.8, OD, OD*REMOTE+W/4, OD*REMOTE+W/4+WW
 rectng, ID+DD*.5, OD, OD*REMOTE+W/2, OD*REMOTE+W/2+WW
 rectng, ID+DD*.2, OD, OD*REMOTE+W*3/4, OD*REMOTE+W*3/4+WW
-rectng, OD, OD+DD, OD*REMOTE, OD*REMOTE+W
+rectng, OD, OD+DD*2, OD*REMOTE, OD*REMOTE+W
 
 aovlap,all
 
@@ -56,10 +56,9 @@ mp,murx,2,1        !线圈
 mp,rsvx,3,15e-8  !管道
 mp,murx,3,70     !管道
 mp,rsvx,4,15e-8  !磁化窗
-mp,murx,4,70     !磁化窗
-mp,rsvx,5,15e-8  !缺陷
-mp,murx,5,70     !缺陷
-
+mp,murx,4,5     !磁化窗
+mp,rsvx,4,15e-8  !磁化窗
+mp,murx,5,5     !缺陷
 
 
 !指定单元和材料类型
@@ -203,34 +202,52 @@ finish
 
 !求解
 /solu
-antype,harmic
 esel,s,mat,,2
 bfe,all,vltg,,12 !加载荷，电流密度 5.5E6
 esel,all
-harfrq,6.4         ! 设定频率 60HZ
+antype,harmic
+harfrq,0.4         ! 设定频率 60HZ
 solve
-finish
+
 
 !显示
 /post1
-set,1
-plf2d,100
+lcdef,1,1,1,0
+lcdef,2,1,1,1
+lcase,1
+lcoper,srss,2
+lcwrite,3
+
+
+padel,polar
+PATH,polar,2,,100
+ppath,1,,ID,OD*4
+ppath,2,,OD,OD*4
+pdef,polar,H,Y
+PCALC,Log,plog,polar
+plpath,plog
+
+plf2d,1000
 
 padel,ID
 PATH,ID,2,,1000                         
-PPATH,1,,ID,OD              
-PPATH,2,,ID,len            
-PDEF,ID,B,X
-!PCALC,Log,IDLOG,ID
-PLPATH,ID
+PPATH,1,,ID,OD*3              
+PPATH,2,,ID,OD*6            
+PDEF,IDHS,H,SUM
+PCALC,Log,IDHSLOG,IDHS
+PDEF,IDHX,H,X
+PCALC,Log,IDHXLOG,IDHX
+PDEF,IDHY,H,Y
+PCALC,Log,IDHYLOG,IDHY
+PLPATH,IDHXLOG,IDHYLOG,IDHSLOG
 
 padel,OD
 PATH,OD,2,,1000
 PPATH,1,,OD+DD,0              
 PPATH,2,,OD+DD,len            
-PDEF,OD,B,SUM
-PCALC,Log,ODLOG,OD
-PLPATH,ODLOG
+PDEF,ODHS,H,SUM
+PCALC,Log,ODLOG,ODHS
+PLPATH,ODLOG,IDLOG,OD
 
 padel,polar
 PATH,polar,2,,100
